@@ -10,37 +10,36 @@
     <p>好友代码: <input type="text" id="friend_code" /></p>
     <p><input type="button" value="生成当日好友码" id="gen_qr_code" onclick="func()" /></p>
     <script>
-        function gen_code(s, sec) {
-            let offset = parseInt(sec / 40);
-            let dst = s + offset;
-            let ret = ''
-            while (dst > 0) {
-                let tv = dst % 26;
-                if (tv == 0) {
-                    tv = 90;
-                } else {
-                    tv += 64;
-                }
-                ret = String.fromCharCode(tv) + ret;
-                dst = parseInt(dst / 26);
-            }
-            return ret;
+        var getQR = function () {
+            let n2t = {
+                0: 'B',
+                1: 'C',
+                2: 'D',
+                3: 'E',
+                4: 'F',
+                5: 'G',
+                6: 'H',
+                7: 'J',
+                8: 'K',
+                9: 'M',
+                a: 'N',
+                b: 'P',
+                c: 'Q',
+                d: 'R',
+                e: 'S',
+                f: 'T',
+            };
+            let timestamp = Date.now().toString(16).split("");
+            let timeText = "";
+            timestamp.forEach(function (e) {
+                timeText += n2t[e]
+            });
+            return timeText;
         }
         function func() {
-            let cur_time = new Date().getTime()/1000;
-            const base_time = 1685372456;
-            const base_code = 1062617304;
-            let offset = (cur_time - base_time);
-            console.log("offset_time: "+offset)
-            if (offset < 0) {
-                alert("时间异常!");
-                return;
-            }
-            let bcode=gen_code(base_code,0);
-            console.log('base_code: '+bcode);
-            let r = gen_code(base_code, offset);
+            let r = getQR()
             let origin_code = document.getElementById("friend_code");
-            let code = '4,${origin_code}${r}AAAA';
+            let code = '4,${origin_code}${r}';
             code = code.replace('${origin_code}', origin_code.value);
             code = code.replace('${r}', r);
             let url = 'https://tool.oschina.net/action/qrcode/generate?data=${code}&output=image%2Fpng&error=L&type=0&margin=16&size=4&1685244645838';
